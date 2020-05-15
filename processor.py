@@ -81,7 +81,10 @@ class CORDProcessor():
                     self.rows.append(dict(cord_uid=_id, section=table[0], subsection=table[1], text=table[2]))
                 self.metadata['body_rows'] = self.rows
                 if doindex == 'mongo':
-                    self.collection.insert_one(self.metadata)
+                    try:
+                        self.collection.insert_one(self.metadata)
+                    except: 
+                        print("errors with doi %s" % doi)
                 else:
                     self.papers[doi] = self.metadata
         return
