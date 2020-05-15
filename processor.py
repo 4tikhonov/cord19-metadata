@@ -3,11 +3,17 @@ import os
 import numpy as np
 from commons import CORDCommons
 import json
+from api.config import mongouser, mongopass, doindex, cordversion
+from pymongo import MongoClient
+from elasticsearch import Elasticsearch
 
 class CORDProcessor():
     def __init__(self, df, directory):    
         self.df = df
         self.directory = directory
+        self.mongoclient = MongoClient("mongodb://%s:%s@mongodb.coronawhy.org" % (mongouser, mongopass))
+        self.db = self.mongoclient.get_database('cord19')
+        self.collection = self.db[cordversion]
         
     def has_v15_metadata(self):
         if self.directory:
@@ -74,7 +80,10 @@ class CORDProcessor():
                 for table in tables:
                     self.rows.append(dict(cord_uid=_id, section=table[0], subsection=table[1], text=table[2]))
                 self.metadata['body_rows'] = self.rows
-                self.papers[doi] = self.metadata
+                if doindex == 'mongo':
+                    self.collection.insert_one(self.metadata)
+                else:
+                    self.papers[doi] = self.metadata
         return
 
     def has_pmc_xml_parse(self):
