@@ -81,11 +81,15 @@ class CORDProcessor():
             self.rows = []
             self.papers = {}
             jsfile = {}
-            for i in self.df[(self.df["has_pmc_xml_parse"] == 0) & (df["has_pdf_parse"] == 1)].index:
+            self.df = self.df[self.df["has_pdf_parse"] == 1]
+            self.df = self.df[self.df["has_pmc_xml_parse"] == 0]
+            self.df = self.df[0:10]
+            print(self.df.index)
+            for i in self.df[(self.df["has_pmc_xml_parse"] == 0) & (self.df["has_pdf_parse"] == 1)].index:
                 self.metadata = {}
-                section = (str(df.iloc[i].full_text_file) + "/") * 2
-                doi = df.iloc[i].doi
-                sha = df.iloc[i].sha
+                section = (str(self.df.iloc[i].full_text_file) + "/") * 2
+                doi = self.df.iloc[i].doi
+                sha = self.df.iloc[i].sha
                 if len(sha.split("; ")) > 1:
                     sha = sha.split("; ")[0]
                 filename = self.directory + '/' + section + "pdf_json/" + sha + ".json"
@@ -100,25 +104,25 @@ class CORDProcessor():
                 self.metadata['cord_uid'] = _id
                 if "title" in jsfile.keys():
                     self.metadata['title'] = jsfile["title"]
-                    rows.append(dict(cord_uid=_id, section="title", subsection=0, text=jsfile["title"]))
+                    self.rows.append(dict(cord_uid=_id, section="title", subsection=0, text=jsfile["title"]))
                 else:
-                    rows.append(dict(cord_uid=_id, section="title", subsection=0, text=df.iloc[i].title))
-                    self.metadata['title'] = df.iloc[i].title
+                    self.rows.append(dict(cord_uid=_id, section="title", subsection=0, text=self.df.iloc[i].title))
+                    self.metadata['title'] = self.df.iloc[i].title
                     
                 if "abstract" in jsfile.keys():
                     if len(jsfile["abstract"]) > 1:
                         for j in range(len(jsfile["abstract"])):
                             self.metadata['abstract'] = jsfile["abstract"]
-                            rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=jsfile["abstract"][j]["text"]))
+                            self.rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=jsfile["abstract"][j]["text"]))
                     else:
-                        rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=jsfile["abstract"]))
+                        self.rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=jsfile["abstract"]))
                         self.metadata['abstract'] = jsfile["abstract"]
                 elif "abstract" in jsfile["metadata"].keys():
                     self.metadata['abstract'] = jsfile["metadata"]["abstract"]
-                    rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=jsfile["metadata"]["abstract"]))
+                    self.rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=jsfile["metadata"]["abstract"]))
                 else:
-                    rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=df.iloc[i].abstract))
-                    self.metadata['abstract'] = df.iloc[i].abstract
+                    self.rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=df.iloc[i].abstract))
+                    self.metadata['abstract'] = self.df.iloc[i].abstract
 
                 self.metadata['body_text'] = jsfile["body_text"]
                 sections = list(set([k["section"] for k in jsfile["body_text"]]))
@@ -128,7 +132,7 @@ class CORDProcessor():
                         if jsfile["body_text"][l]["section"] == section:
                             if section == '':
                                 section = "body_text"
-                            rows.append(dict(cord_uid=_id, section=section,
+                            self.rows.append(dict(cord_uid=_id, section=section,
                                      subsection=l, text=jsfile["body_text"][l]["text"]))
 
                 c = CORDCommons(self.directory)
@@ -142,16 +146,17 @@ class CORDProcessor():
     def has_no_pdf_parse(self):
         self.papers = {}
         if self.directory:
-            for i in df[(df["has_pmc_xml_parse"] == 0) & (df["has_pdf_parse"] == 0)].index:
+            for i in self.df[(self.df["has_pmc_xml_parse"] == 0) & (self.df["has_pdf_parse"] == 0)].index:
                 self.metadata = {}
-                section = (str(df.iloc[i].full_text_file) + "/") * 2
-                sha = df.iloc[i].sha
-                doi = df.iloc[i].doi
+                section = (str(self.df.iloc[i].full_text_file) + "/") * 2
+                sha = self.df.iloc[i].sha
+                doi = self.df.iloc[i].doi
 
                 if len(sha.split("; ")) > 1:
                     sha = sha.split("; ")[0]
                 filename = self.directory + '/' + section + "pdf_json/" + sha + ".json"
                 self.metadata['path'] = section + "pdf_json/" + sha + ".json"
+                print(filename)
 
                 if len(sha) < 2:
                     bad_sha = True
@@ -168,17 +173,17 @@ class CORDProcessor():
                     with open(filename) as paperjs:
                         jsfile = json.load(paperjs)
                 except:
-                    print("Problem with ", df.iloc[i].cord_uid)
+                    print("Problem with ", self.df.iloc[i].cord_uid)
                     #continue
 
-                _id = df.iloc[i]["cord_uid"]
+                _id = self.df.iloc[i]["cord_uid"]
                 self.metadata['cord_uid'] = _id
                 if "title" in jsfile.keys():
                     self.metadata['title'] = jsfile["title"]
                     rows.append(dict(cord_uid=_id, section="title", subsection=0, text=jsfile["title"]))
                 else:
-                    rows.append(dict(cord_uid=_id, section="title", subsection=0, text=df.iloc[i].title))
-                    self.metadata['title'] = df.iloc[i].title
+                    rows.append(dict(cord_uid=_id, section="title", subsection=0, text=self.df.iloc[i].title))
+                    self.metadata['title'] = self.df.iloc[i].title
                     
                 if "abstract" in jsfile.keys():
                     if len(jsfile["abstract"]) > 1:
@@ -192,8 +197,8 @@ class CORDProcessor():
                     self.metadata['abstract'] = jsfile["metadata"]["abstract"]
                     rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=jsfile["metadata"]["abstract"]))
                 else:
-                    self.metadata['abstract'] = df.iloc[i].abstract
-                    rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=df.iloc[i].abstract))
+                    self.metadata['abstract'] = self.df.iloc[i].abstract
+                    rows.append(dict(cord_uid=_id, section="abstract", subsection=0, text=self.df.iloc[i].abstract))
 
                 sections = list(set([k["section"] for k in jsfile["body_text"]]))
 
