@@ -29,6 +29,7 @@ class CORDProcessor():
                 filename = self.directory + '/' + relpath
                 print("%s\n" % filename)
                 self.metadata['path'] = relpath
+                self.metadata['doi'] = doi
                 try:
                     with open(filename) as paperjs:
                         jsfile = json.load(paperjs)
