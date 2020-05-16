@@ -19,9 +19,9 @@ class CORDProcessor():
         if self.directory:
             jsfile = {}
             self.papers = {}
-            self.rows = []
             for i in self.df.index:
                 self.metadata = {}
+                self.rows = []
                 doi = self.df.iloc[i].doi
                 relpath = self.df.iloc[i].pdf_json_files
                 section = (str(relpath) + "/") * 2
@@ -93,9 +93,9 @@ class CORDProcessor():
         if self.directory:
             jsfile = {}
             self.papers = {}
-            self.rows = []
             for i in self.df[self.df["has_pmc_xml_parse"] == 1].index:
                 self.metadata = {}
+                self.rows = []
                 doi = self.df.iloc[i].doi
                 section = (str(self.df.iloc[i].full_text_file) + "/") * 2
                 pmcid = self.df.iloc[i].pmcid
@@ -158,7 +158,6 @@ class CORDProcessor():
     
     def has_no_pmc_xml_parse(self):
         if self.directory:
-            self.rows = []
             self.papers = {}
             jsfile = {}
             self.df = self.df[self.df["has_pdf_parse"] == 1]
@@ -167,6 +166,7 @@ class CORDProcessor():
             print(self.df.index)
             for i in self.df[(self.df["has_pmc_xml_parse"] == 0) & (self.df["has_pdf_parse"] == 1)].index:
                 self.metadata = {}
+                self.rows = []
                 section = (str(self.df.iloc[i].full_text_file) + "/") * 2
                 doi = self.df.iloc[i].doi
                 sha = self.df.iloc[i].sha
@@ -228,6 +228,7 @@ class CORDProcessor():
         if self.directory:
             for i in self.df[(self.df["has_pmc_xml_parse"] == 0) & (self.df["has_pdf_parse"] == 0)].index:
                 self.metadata = {}
+                self.rows = []
                 section = (str(self.df.iloc[i].full_text_file) + "/") * 2
                 sha = self.df.iloc[i].sha
                 doi = self.df.iloc[i].doi
