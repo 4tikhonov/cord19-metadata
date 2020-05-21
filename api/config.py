@@ -1,4 +1,10 @@
 mongouser = 'coronawhyguest'
 mongopass = 'coro901na'
+corddatabase = 'cord19'
 cordversion = 'v19'
+
+mongouser = 'admin'
+mongopassword = 'miyPuperRo0tPar0l'
+corddatabase = 'altmetrics'
+altmetricsID = '103'
 doindex = 'mongo'
