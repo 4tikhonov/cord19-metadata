@@ -11,5 +11,6 @@ print(df.index)
 
 r = CORDProcessor(df, maindir)
 p = CORDProcessor(fulldf, maindir)
-p.has_no_pmc_xml_parse()
+#p.has_no_pmc_xml_parse()
+p.has_v22_parse()
 print(p.papers)
