@@ -1,6 +1,11 @@
 # CORD-19 Common Preprocessing Module
 This module was created to get CORD-19 papers synchronized in MongoDB and Elasticsearch and get its metadata converted to various bibliographic standards (MARC21, etc).
 
+## Install python3 dependencies
+```
+pip3 install -r requirements.txt
+```
+
 ## CORD-19 collection
 * Download the original collection from [Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge) or directly from [Ai2](https://ai2-semanticscholar-cord-19.s3-us-west-2.amazonaws.com/historical_releases.html)
 * unzip archive in some folder on your hard drive, for example, /corddata
