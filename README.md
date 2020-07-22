@@ -6,7 +6,7 @@ This module was created to get CORD-19 papers synchronized in MongoDB and Elasti
 * unzip archive in some folder on your hard drive, for example, /corddata
 * edit api/config.py and change "maindir" to your folder, "cordversion" to reflect the current CORD-19 version from Kaggle (v38 at the moment)
 
-## Setup Mongo locally and create a user
+## Setup Mongo locally and create user to access it, for example:
 ```
 mongo admin
 db.createUser({user: "coronawhyguest" , pwd: "coro901na", roles: [  "readWriteAnyDatabase" ]});
