@@ -4,7 +4,7 @@ import os
 import numpy as np
 from commons import CORDCommons
 import json
-from api.config import mongouser, mongopass, doindex, cordversion
+from api.config import mongouser, mongopass, mongohost, doindex, cordversion
 from pymongo import MongoClient
 from elasticsearch import Elasticsearch
 
@@ -12,7 +12,7 @@ class CORDProcessor():
     def __init__(self, df, directory):    
         self.df = df
         self.directory = directory
-        self.mongoclient = MongoClient("mongodb://%s:%s@mongodb.coronawhy.org" % (mongouser, mongopass))
+        self.mongoclient = MongoClient("mongodb://%s:%s@%s" % (mongouser, mongopass, mongohost))
         self.db = self.mongoclient.get_database('cord19')
         self.collection = self.db[cordversion]
         
